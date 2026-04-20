@@ -1,0 +1,35 @@
+============================================================
+ALL PARAGRAPHS
+============================================================
+[1] Style=Heading 3 | 'CSE461: Introduction to Robotics'
+[2] Style=Heading 3 | 'Hardware Project Guidelines'
+[3] Style=Heading 4 | 'Objective'
+[4] Style=normal | 'Design and build a smart autonomous robot using a microcontroller (Arduino or Raspberry Pi), multiple sensors, and actuators. The project should address a real-world problem and align with course objectives. Each idea must be approved by the lab faculty.'
+[5] Style=normal | ''
+[6] Style=Heading 4 | 'Required Components'
+[7] Style=normal | 'Microcontroller (Arduino or Raspberry Pi)'
+[8] Style=normal | 'Chassis or robot frame'
+[9] Style=normal | 'Power supply (battery or external)'
+[10] Style=normal | 'At least 3 types of sensors'
+[11] Style=normal | 'At least 2 types of actuators'
+[12] Style=normal | 'Jumper wires, breadboard'
+[13] Style=normal | ''
+[14] Style=Heading 4 | 'Project Criteria'
+[15] Style=normal | 'Must be autonomous and problem-solving.'
+[16] Style=normal | 'Simple line-following or remote-controlled robots are not acceptable as standalone projects. These may only be included as features within a larger, autonomous system.'
+[17] Style=normal | ''
+[18] Style=Heading 4 | 'Steps and Deliverables'
+[19] Style=normal | '1. Project Proposal\n\tSubmit three project ideas. Find the details in the given link :  CSE461 Project Proposal Template'
+[20] Style=normal | '2. Project Demonstration and Report Submission'
+[21] Style=normal | 'Prepare a presentation covering design, implementation, and challenges.'
+[22] Style=normal | 'Demonstrate the robot’s autonomous functionality.'
+[23] Style=normal | 'Submit the final project report covering both functionality and sustainability aspects of the project: '
+[24] Style=normal | ''
+[25] Style=Heading 4 | 'Notes'
+[26] Style=normal | 'Properly cite all components and references.'
+[27] Style=normal | 'Plagiarism will result in penalties.'
+[28] Style=normal | 'Consult your instructor if you face technical difficulties.'
+
+============================================================
+ALL TABLES
+============================================================
