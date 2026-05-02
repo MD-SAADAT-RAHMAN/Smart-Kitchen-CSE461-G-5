@@ -13,12 +13,13 @@ This guide converts the faculty comments into a buildable plan for your final pr
 - Sensor update: Use DHT22 (not DHT11)
 - Safety action required: Include cutoff system
 - Usability requirement: Add stop alarm button
+- Demo scope update: Use cutoff indicator LED now; keep valve as future extension
 
 ## Final System Objective
 Build an autonomous kitchen safety controller that:
 - Detects dangerous gas-leak and fire-risk conditions
 - Distinguishes normal cooking from dangerous events
-- Performs automatic safety actions (ventilation + gas cutoff)
+- Performs automatic safety actions (ventilation + cutoff-command indication)
 - Allows user alarm acknowledgement without disabling safety controls
 
 ## Recommended Hardware (Updated)
@@ -37,7 +38,7 @@ Build an autonomous kitchen safety controller that:
 - Buzzer (alarm)
 - Red/Yellow/Green LEDs (status)
 - LCD 16x2 I2C (status and messages)
-- Solenoid gas valve + relay or MOSFET driver (cutoff system)
+- Cutoff indicator LED (demo output on cutoff command; valve optional extension)
 
 ### Buttons
 - Stop Alarm button (mandatory)
@@ -95,13 +96,13 @@ Implement all of these:
 
 ## Cutoff System Design
 When danger is confirmed:
-- Close gas solenoid valve
+- Turn ON cutoff indicator LED (represents valve cutoff command)
 - Turn ON exhaust fan
 - Open vent flap fully
 - Keep alarm active until acknowledgement and safe conditions
 
 Cutoff release policy:
-- Do not reopen gas immediately after alarm stop
+- Do not clear cutoff command immediately after alarm stop
 - Require safe readings for a continuous safety window (for example 60 seconds)
 - Require manual reset (long press or dedicated reset button)
 
@@ -114,7 +115,7 @@ Define button behavior clearly:
 - Long press (for example 3 seconds) only after safe window:
   - Clear alarm
   - Return to NORMAL
-  - Allow controlled gas restore if design permits
+  - Allow controlled return; future gas-restore control is possible if valve is added
 
 Important rule:
 - Stop Alarm button should mute sound, not disable safety logic.
@@ -123,7 +124,7 @@ Important rule:
 - MQ-2 to analog input
 - DHT22 to digital pin with required pull-up resistor
 - Flame sensor to digital input (and optional analog if module supports)
-- Fan relay, valve relay, buzzer, LEDs to digital outputs
+- Fan relay, cutoff LED, buzzer, LEDs to digital outputs
 - Stop button to digital input with pull-down or INPUT_PULLUP logic
 - LCD via I2C SDA/SCL
 
@@ -140,12 +141,12 @@ Implement code in modules:
 ## Step-by-Step Build Plan
 ### Step 1: Requirements Freeze
 - Confirm all thresholds, timers, and state names with faculty
-- Finalize component list with DHT22 and gas cutoff valve
+- Finalize component list with DHT22 and cutoff indicator LED (valve optional)
 
 ### Step 2: Hardware Assembly
 - Build breadboard prototype
 - Verify each sensor and actuator independently
-- Confirm relay and valve switching safety
+- Confirm relay switching and cutoff-indicator behavior
 
 ### Step 3: Sensor Calibration
 - Record baseline gas in clean-air environment
@@ -187,10 +188,10 @@ Implement code in modules:
 - Week 4: Final tuning, report, slides, and demo rehearsal
 
 ## What You Should Do Next (Immediate)
-1. Buy DHT22, flame sensor, and gas solenoid valve parts first.
+1. Buy DHT22, flame sensor, and a cutoff indicator LED first.
 2. Build a minimal prototype: MQ-2 + DHT22 + buzzer + stop button.
 3. Implement and test state machine without cutoff first.
-4. Add cutoff relay logic only after stable detection.
+4. Add cutoff indicator output logic (LED ON in alarm/cutoff states) after stable detection.
 5. Collect 2 to 3 days of test logs and tune thresholds.
 6. Prepare demo script showing no false alarms during normal cooking.
 

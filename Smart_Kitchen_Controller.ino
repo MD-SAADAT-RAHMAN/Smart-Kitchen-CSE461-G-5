@@ -10,7 +10,7 @@ const uint8_t PIN_STOP_BUTTON = 2;
 const uint8_t PIN_FLAME = 3;
 const uint8_t PIN_BUZZER = 4;
 const uint8_t PIN_RELAY_FAN = 5;
-const uint8_t PIN_RELAY_VALVE = 6;
+const uint8_t PIN_CUTOFF_LED = 6;  // Demo indicator for cutoff command (replaces valve)
 const uint8_t PIN_LED_YELLOW = 7;
 const uint8_t PIN_LED_RED = 8;
 const uint8_t PIN_LED_GREEN = 9;
@@ -24,11 +24,7 @@ const uint8_t PIN_DHT = 12;
 const bool USE_RESET_BUTTON = false;
 const bool RELAY_ACTIVE_LOW = true;
 const bool FLAME_ACTIVE_LOW = true;
-
-// Valve behavior depends on your actual valve type.
-// true  = relay ON means gas path is ALLOWED.
-// false = relay ON means gas path is CUTOFF.
-const bool VALVE_ENERGIZE_TO_ALLOW_GAS = true;
+const bool CUTOFF_LED_ACTIVE_HIGH = true;
 
 const uint8_t LCD_I2C_ADDR = 0x27;
 
@@ -459,57 +455,56 @@ void handleButtons(unsigned long nowMs) {
 
 void applyOutputs(unsigned long nowMs) {
   bool fanOn = false;
-  bool valveAllowGas = true;
+  bool cutoffCommandActive = false;
   bool buzzerOn = false;
   int servoAngle = SERVO_ANGLE_CLOSED;
 
   switch (currentState) {
     case STATE_WARMUP:
       fanOn = false;
-      valveAllowGas = true;
+      cutoffCommandActive = false;
       servoAngle = SERVO_ANGLE_CLOSED;
       break;
 
     case STATE_NORMAL:
       fanOn = false;
-      valveAllowGas = true;
+      cutoffCommandActive = false;
       servoAngle = SERVO_ANGLE_CLOSED;
       break;
 
     case STATE_COOKING_NORMAL:
       fanOn = false;
-      valveAllowGas = true;
+      cutoffCommandActive = false;
       servoAngle = SERVO_ANGLE_MID;
       break;
 
     case STATE_WARNING:
       fanOn = true;
-      valveAllowGas = true;
+      cutoffCommandActive = false;
       servoAngle = SERVO_ANGLE_MID;
       break;
 
     case STATE_ALARM_ACTIVE:
       fanOn = true;
-      valveAllowGas = false;
+      cutoffCommandActive = true;
       servoAngle = SERVO_ANGLE_OPEN;
       break;
 
     case STATE_CUTOFF_LOCKED:
       fanOn = true;
-      valveAllowGas = false;
+      cutoffCommandActive = true;
       servoAngle = SERVO_ANGLE_OPEN;
       break;
   }
 
-  // Keep gas cutoff active while alarm is latched.
+  // Keep cutoff command active while alarm is latched.
   if (alarmLatched) {
-    valveAllowGas = false;
+    cutoffCommandActive = true;
   }
 
-  bool valveRelayOn = VALVE_ENERGIZE_TO_ALLOW_GAS ? valveAllowGas : !valveAllowGas;
-
   writeRelay(PIN_RELAY_FAN, fanOn);
-  writeRelay(PIN_RELAY_VALVE, valveRelayOn);
+  bool cutoffLedOn = CUTOFF_LED_ACTIVE_HIGH ? cutoffCommandActive : !cutoffCommandActive;
+  digitalWrite(PIN_CUTOFF_LED, cutoffLedOn ? HIGH : LOW);
   ventServo.write(servoAngle);
 
   bool buzzerMuted = (nowMs < buzzerMuteUntilMs);
@@ -642,7 +637,7 @@ void setup() {
 
   pinMode(PIN_BUZZER, OUTPUT);
   pinMode(PIN_RELAY_FAN, OUTPUT);
-  pinMode(PIN_RELAY_VALVE, OUTPUT);
+  pinMode(PIN_CUTOFF_LED, OUTPUT);
   pinMode(PIN_LED_YELLOW, OUTPUT);
   pinMode(PIN_LED_RED, OUTPUT);
   pinMode(PIN_LED_GREEN, OUTPUT);
@@ -659,7 +654,7 @@ void setup() {
   // Safe defaults at boot.
   digitalWrite(PIN_BUZZER, LOW);
   writeRelay(PIN_RELAY_FAN, false);
-  writeRelay(PIN_RELAY_VALVE, VALVE_ENERGIZE_TO_ALLOW_GAS ? true : false);
+  digitalWrite(PIN_CUTOFF_LED, CUTOFF_LED_ACTIVE_HIGH ? LOW : HIGH);
 
   digitalWrite(PIN_LED_GREEN, LOW);
   digitalWrite(PIN_LED_YELLOW, LOW);

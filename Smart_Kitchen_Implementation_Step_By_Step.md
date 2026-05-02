@@ -14,7 +14,7 @@ Where it helps:
 Why this project is important:
 - A simple one-threshold alarm gives many false alarms.
 - This project uses multi-condition logic, so it behaves closer to real kitchen conditions.
-- It can trigger ventilation and gas cutoff, not only sound an alarm.
+- It can trigger ventilation and a cutoff command indicator, not only sound an alarm.
 
 When system starts:
 - It starts immediately after power is applied.
@@ -26,7 +26,7 @@ Do not change these core requirements:
 - Multi-condition logic (not single threshold)
 - False alarm prevention
 - DHT22 (not DHT11)
-- Gas cutoff mechanism
+- Cutoff command mechanism (LED in demo)
 - Stop alarm button
 
 System states:
@@ -64,9 +64,9 @@ Note: currents vary by vendor. Check your module labels and datasheets.
 | MG90S servo (recommended) | Vent flap actuation | Opens/closes flap for airflow | 4.8 to 6V | 100mA idle, up to 700mA peak | Signal + separate 5V + GND | Stall current, gear wear | Separate 5V rail, avoid hard stops |
 | SG90 servo (optional only) | Lightweight flap only | Lower torque option | 4.8 to 6V | Similar but weaker torque | Same as MG90S | Plastic gear wear, stalling | Use only for very light flap |
 | Servo bracket and linkage kit | Mechanical coupling | Transfers servo motion to vent flap reliably | N/A | N/A | Servo horn, mount, pushrod/link | Jamming or slippage without rigid mount | Use one-axis MG90S mount for flap; use two-axis pan-tilt only if truly needed |
-| 2-channel relay module | Switches fan and valve | Isolates controller from load side | 5V coil | ~70mA per channel | IN pins + COM/NO/NC contacts | Contact damage from high load | Stay within relay rating |
+| 2-channel relay module | Switches fan and optional future valve | Isolates controller from load side | 5V coil | ~70mA per channel | IN pins + COM/NO/NC contacts | Contact damage from high load | Stay within relay rating |
 | 12V DC exhaust fan | Ventilation | Removes gas/smoke from enclosure | 12V | 200 to 700mA | Through relay contact | Motor inrush, stuck blades | Fuse + free airflow |
-| 12V NC solenoid gas valve | Automatic gas cutoff | Closes gas path in danger state | 12V | 300mA to 1A | Through relay contact | Coil heating if misused | Correct duty and rated supply |
+| Cutoff indicator LED + resistor | Demo cutoff output | Indicates cutoff command in ALARM/CUTOFF state | 5V | 5 to 15mA | Digital pin through 220 ohm resistor | Wrong polarity or no resistor | Correct polarity + resistor |
 | Buck converter 12V to 5V | Stable logic power | Powers Uno, sensors, servo | 12V input, 5V output | 2A to 3A output recommended | Between 12V supply and 5V bus | Wrong trim voltage | Set to 5.00V before connecting |
 | 18650 cells in holders (demo-only source) | Optional temporary source | Can be used for short demo logic-side power through regulated modules | 3.7V nominal per cell (4.2V full) | Depends on cell and module | Use through power bank board or regulated converter, not direct to loads | Over-discharge, imbalance, wiring heat if used as raw series pack | Use matched cells, monitor voltage, and recharge cells individually |
 | 5V USB power bank (fallback logic source) | Easy beginner option | Powers Arduino logic side when no buck is available | 5V | Depends on bank (2A or higher preferred) | Arduino USB input | Auto-off at low load, unstable for servo peaks | Test runtime and keep shared ground with control side |
@@ -86,13 +86,12 @@ Basic formulas:
 
 Example estimate (replace with your actual labels):
 - 12V fan: 0.40A
-- 12V valve: 0.50A
 - 5V side (Uno + sensors + LCD + servo peaks averaged): 1.20A equivalent from buck
 
 12V adapter current target:
-- Load side direct = 0.40A + 0.50A = 0.90A
+- Load side direct = 0.40A
 - Buck input equivalent for 5V side approx = (5V x 1.20A) / (12V x 0.85 efficiency) approx 0.59A
-- Total approx = 1.49A
+- Total approx = 0.99A
 - Use at least 3A for margin. 5A gives better reliability.
 
 If you ever connect 4x 18650 Li-ion cells in series (future advanced version):
@@ -100,7 +99,7 @@ If you ever connect 4x 18650 Li-ion cells in series (future advanced version):
 - Nominal pack voltage is about 14.8V.
 - Full-charge pack voltage is about 16.8V.
 - This is not a direct 12V source.
-- 12V fan and 12V valve should receive regulated 12V for long-term reliability.
+- 12V fan should receive regulated 12V for long-term reliability.
 
 Critical power rules:
 1. Do not power servo from Arduino 5V pin when under load.
@@ -113,13 +112,13 @@ Critical power rules:
 
 Use this temporary setup for prototype and demo:
 1. Power Arduino and sensors from a good 5V USB power bank.
-2. Use a separate 12V adapter for fan and valve through relay contacts.
+2. Use a separate 12V adapter for fan through relay contact.
 3. Keep Arduino ground and relay input-side ground common.
-4. If 12V hardware is unavailable, keep fan/valve as simulated outputs (LED/buzzer) and demonstrate full logic flow.
+4. If 12V hardware is unavailable, keep fan as simulated output and demonstrate cutoff logic with indicator LED/buzzer.
 5. If you want to use your 18650 cells, use them only through a regulated 5V source (power bank board/case) for logic-side demo power.
 
 Important note:
-- Avoid raw series wiring of loose 18650 cells for direct fan/valve powering in beginner demos.
+- Avoid raw series wiring of loose 18650 cells for direct fan powering in beginner demos.
 
 ## 6. Wiring Map (Recommended Pin Plan)
 
@@ -131,7 +130,7 @@ Digital and analog pins:
 - D3: Flame sensor digital output
 - D4: Buzzer control
 - D5: Relay channel 1 (fan)
-- D6: Relay channel 2 (gas valve)
+- D6: Cutoff indicator LED (demo cutoff-command output)
 - D7: Yellow LED (warning)
 - D8: Red LED (alarm)
 - D9: Green LED (normal)
@@ -141,7 +140,7 @@ Digital and analog pins:
 - A4 (SDA), A5 (SCL): LCD I2C
 
 Power rails:
-- Regulated 12V rail: fan and valve through relay contacts
+- Regulated 12V rail: fan through relay contact
 - 5V logic rail from buck or USB power bank: Arduino, sensors, LCD, relay module coil side, buzzer
 - Servo 5V rail: use a strong regulated 5V source (same buck or separate 5V module)
 - Common GND between all modules
@@ -161,10 +160,10 @@ Method A (recommended final wiring):
 
 Method B (easy fallback with minimal purchases):
 1. Use USB power bank to power Arduino through USB.
-2. Use separate 12V adapter for fan and valve load line.
+2. Use separate 12V adapter for fan load line.
 3. Connect relay module VCC/GND to Arduino-side 5V/GND.
 4. Connect Arduino GND to the relay input-side GND (common control ground).
-5. Keep relay contact side switching the separate 12V adapter to fan and valve.
+5. Keep relay contact side switching the separate 12V adapter to fan.
 
 ### 7.2 Connect Arduino and sensors
 1. If using buck 5V rail: Arduino 5V to 5V rail, Arduino GND to ground rail.
@@ -192,15 +191,15 @@ Method B (easy fallback with minimal purchases):
 
 ### 7.4 Connect relay and load side
 1. Relay module VCC to 5V, GND to GND.
-2. Relay IN1 to D5 (fan control), IN2 to D6 (valve control).
+2. Relay IN1 to D5 (fan control). Keep D6 reserved for cutoff indicator LED.
 3. Fan switching via relay contact:
 - 12V positive to relay COM1
 - Relay NO1 to fan positive
 - Fan negative to 12V ground
-4. Valve switching via relay contact:
-- 12V positive to relay COM2
-- Relay NO2 to valve positive
-- Valve negative to 12V ground
+4. Cutoff indicator LED (demo):
+- D6 to 220 ohm resistor to LED anode
+- LED cathode to GND
+- LED ON means cutoff command is active
 
 Note:
 - Some relay modules are active LOW (ON when pin goes LOW). Check this in early testing.
@@ -336,33 +335,31 @@ Protection:
 - Keep cable short or twisted pair if needed
 - Add basic enclosure venting but avoid direct steam
 
-## 14. Gas Cutoff Mechanism (How and When It Triggers)
+## 14. Cutoff Command Indicator (How and When It Triggers)
 
 What it does:
-- Closes gas path using solenoid valve when confirmed danger persists.
+- Turns ON a cutoff indicator LED when confirmed danger persists.
 
 When it starts:
 - In ALARM_ACTIVE, start cutoff confirmation timer.
-- If danger remains beyond timer (example 10 to 20 seconds), go CUTOFF_LOCKED and energize valve control logic as per valve type.
+- If danger remains beyond timer (example 10 to 20 seconds), go CUTOFF_LOCKED and keep cutoff indicator ON.
 
 How it works:
-1. Relay switches power path to valve.
-2. Valve changes state to close gas.
+1. Controller asserts cutoff command output on D6.
+2. Indicator LED turns ON and remains ON while cutoff is active.
 3. Fan remains ON, flap remains OPEN.
 4. Buzzer and red LED indicate danger.
 
-Important valve note:
-- Valve behavior depends on type (normally closed vs normally open, energized-to-open vs energized-to-close).
-- Confirm exact behavior from datasheet before final logic.
+Future extension note:
+- This same cutoff command can drive a real solenoid valve later using relay/MOSFET and proper power supply.
+- Validate valve behavior from datasheet before full deployment.
 
 Damage risks:
-- Continuous overvoltage heats valve coil.
-- Wrong relay contact wiring can keep valve always energized.
+- Wrong LED polarity or missing resistor can damage the LED or pin.
 
 Protection:
-- Correct rated voltage
-- Correct relay contact choice
-- Temperature check of coil during long tests
+- Use a 220 ohm to 1k ohm series resistor
+- Check polarity before power-on
 
 ## 15. Stop Alarm Button Logic (Mandatory)
 
@@ -388,7 +385,7 @@ Why this design helps:
 
 1. Power ON
 - Initialize pins, LCD, and serial logging
-- Set safe default outputs (fan off, buzzer off, valve normal state, flap safe angle)
+- Set safe default outputs (fan off, buzzer off, cutoff indicator OFF, flap safe angle)
 
 2. Warm-up mode
 - MQ-2 lockout active
@@ -409,7 +406,7 @@ Why this design helps:
 - Red LED, buzzer, fan, flap open
 
 6. Cutoff lock
-- If danger persists beyond cutoff timer, close gas and enter CUTOFF_LOCKED
+- If danger persists beyond cutoff timer, keep cutoff indicator ON and enter CUTOFF_LOCKED
 
 7. Recovery path
 - Require continuous safe readings for configured safe window
@@ -433,13 +430,13 @@ These are starter values only:
 
 ## 18. Output Action Table by State
 
-| State | Fan | Flap servo | Buzzer | Gas valve | LEDs | LCD |
+| State | Fan | Flap servo | Buzzer | Cutoff LED (D6) | LEDs | LCD |
 |---|---|---|---|---|---|---|
-| NORMAL | OFF | Closed or standby | OFF | Normal | Green ON | Normal status |
-| COOKING_NORMAL | Low or OFF | Slight open optional | OFF | Normal | Green blink | Cooking normal |
-| WARNING | ON optional | Mid open | Beep pattern optional | Normal | Yellow ON | Warning message |
-| ALARM_ACTIVE | ON | Full open | ON unless muted | Prepare cutoff timer | Red ON | Alarm active |
-| CUTOFF_LOCKED | ON | Full open | ON unless muted | Closed (locked) | Red flash | Gas cutoff locked |
+| NORMAL | OFF | Closed or standby | OFF | OFF | Green ON | Normal status |
+| COOKING_NORMAL | Low or OFF | Slight open optional | OFF | OFF | Green blink | Cooking normal |
+| WARNING | ON optional | Mid open | Beep pattern optional | OFF | Yellow ON | Warning message |
+| ALARM_ACTIVE | ON | Full open | ON unless muted | ON after alarm confirmation | Red ON | Alarm active |
+| CUTOFF_LOCKED | ON | Full open | ON unless muted | ON (latched) | Red flash | Cutoff command locked |
 
 ## 19. Full Build and Test Workflow (Detailed Execution)
 
@@ -451,16 +448,16 @@ These are starter values only:
 5. Test LEDs and buzzer.
 6. Test servo sweep without flap load.
 7. Test relay clicks and load switching with fan only.
-8. Test valve switching with relay.
+8. Test cutoff indicator LED switching on D6.
 
 ### Phase B: Integration without cutoff active
 1. Integrate sensors and display.
 2. Implement risk scoring and states.
-3. Keep valve logic disabled first.
+3. Keep cutoff indicator output disabled first.
 4. Validate normal and warning transitions.
 
 ### Phase C: Integration with cutoff
-1. Enable valve control after logic is stable.
+1. Enable cutoff indicator output after logic is stable.
 2. Verify cutoff only under sustained danger.
 3. Verify cutoff lock does not clear on short press.
 
@@ -488,9 +485,9 @@ These are starter values only:
 - Symptom: NaN or sudden impossible values
 - Fix: retry read, ignore invalid sample, inspect pull-up resistor
 
-5. Valve not responding
-- Symptom: no click and no flow change
-- Fix: verify coil voltage and relay wiring, check fuse
+5. Cutoff indicator LED not responding
+- Symptom: no light when cutoff should be active
+- Fix: verify resistor, LED polarity, and D6 wiring
 
 6. Ground mismatch
 - Symptom: random resets and noisy readings
@@ -567,7 +564,7 @@ Scenario 3: Danger profile
 1. DHT22 is used, DHT11 is not used.
 2. Multi-condition logic is implemented.
 3. False alarm prevention techniques are active.
-4. Gas cutoff mechanism is implemented and tested.
+4. Cutoff command indicator (LED) is implemented and tested.
 5. Stop alarm button mutes only, safety remains active.
 6. State transitions are clearly shown on LCD and serial logs.
 7. Power design includes margin and common ground.

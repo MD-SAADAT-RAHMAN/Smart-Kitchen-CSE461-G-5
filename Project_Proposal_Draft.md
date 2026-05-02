@@ -43,10 +43,10 @@ These 3 ideas were selected because they satisfy all guideline requirements and 
 ## 2. Purpose
 
 ### Objective
-Design and build an autonomous kitchen safety system that uses multi-condition logic to distinguish normal cooking from dangerous events, reduce false alarms, and automatically activate ventilation, alarms, and gas-cutoff safety actions.
+Design and build an autonomous kitchen safety system that uses multi-condition logic to distinguish normal cooking from dangerous events, reduce false alarms, and automatically activate ventilation, alarms, and cutoff-level safety actions.
 
 ### Scope
-The project is intended for household kitchens, dorm kitchens, or small food preparation areas. The system continuously monitors gas trend, temperature-humidity condition, and flame presence near the cooking area (with optional ambient-light context). Based on a multi-condition risk score and state-machine logic, it decides whether to open a vent, run an exhaust fan, trigger alarms, and execute gas cutoff.
+The project is intended for household kitchens, dorm kitchens, or small food preparation areas. The system continuously monitors gas trend, temperature-humidity condition, and flame presence near the cooking area (with optional ambient-light context). Based on a multi-condition risk score and state-machine logic, it decides whether to open a vent, run an exhaust fan, trigger alarms, and execute cutoff-command output (LED in demo mode).
 
 ### Significance
 - LPG gas leakage is a real and dangerous household problem in Bangladesh.
@@ -58,7 +58,7 @@ The project is intended for household kitchens, dorm kitchens, or small food pre
 - **No simple yes/no threshold:** multi-condition risk scoring and state transitions are used.
 - **False alarm prevention:** filtering, persistence timers, hysteresis, and cross-sensor validation are included.
 - **Sensor update applied:** **DHT22** is used instead of DHT11.
-- **Safety requirement applied:** automatic **gas cutoff** is included.
+- **Safety requirement applied:** automatic **cutoff command** is included (shown with LED in demo mode).
 - **Usability requirement applied:** a mandatory **Stop Alarm button** is included.
 
 ## 3. Components
@@ -72,7 +72,7 @@ The project is intended for household kitchens, dorm kitchens, or small food pre
 | **Sensor 4 (Optional)** | LDR for kitchen activity / ambient-light context |
 | **Actuator 1** | SG90 servo motor for ventilation flap |
 | **Actuator 2** | Exhaust/DC fan controlled by relay |
-| **Actuator 3** | Solenoid gas valve for automatic cutoff (relay or MOSFET driver) |
+| **Actuator 3** | Cutoff indicator LED (demo output; can drive solenoid valve in full-power version) |
 | **Actuator 4** | I2C LCD 16x2 |
 | **Additional Components** | Stop Alarm push button (mandatory), LEDs, buzzer, relay module(s), power distribution board (recommended), resistors, breadboard, jumper wires, enclosure/frame, power supply |
 
@@ -87,8 +87,8 @@ The project is intended for household kitchens, dorm kitchens, or small food pre
 | LDR + resistor (optional) | 1 | 30 |
 | SG90 servo | 1 | 200 |
 | Exhaust/DC fan | 1 | 100 |
-| Solenoid gas valve | 1 | 550 |
-| Relay module (2-channel or equivalent) | 1 | 150 |
+| Cutoff indicator LED + resistor | 1 | 20 |
+| Relay module (1-channel for fan or 2-channel optional) | 1 | 120 |
 | I2C LCD 16x2 | 1 | 350 |
 | LEDs + buzzer | 1 set | 80 |
 | Stop Alarm push button | 1 | 20 |
@@ -96,7 +96,7 @@ The project is intended for household kitchens, dorm kitchens, or small food pre
 | DIY enclosure/frame | 1 | 150 |
 | Power supply set | 1 | 250 |
 | Power distribution board (recommended) | 1 | 150 |
-| **Total (Approx.)** |  | **~3,550 BDT** |
+| **Total (Approx.)** |  | **~2,990 BDT** |
 
 ## 5. Functionality Breakdown
 
@@ -112,17 +112,17 @@ The system uses multiple sensors and state-based logic so normal cooking activit
 4. Persistence timers and hysteresis prevent one-sample spikes from creating false alarms.
 5. Only sustained multi-condition danger transitions the system toward cutoff-level response.
 
-### Functionality 2: Automatic Cutoff and Safety Actuation
+### Functionality 2: Automatic Cutoff Command and Safety Actuation
 
 **Overview:**
-When confirmed danger persists, the system performs automatic protective actions including gas cutoff.
+When confirmed danger persists, the system performs automatic protective actions including cutoff-command output.
 
 **Working Procedure:**
 1. If risk remains high for the configured confirmation window, the system enters **ALARM_ACTIVE** and then **CUTOFF_LOCKED**.
-2. The **solenoid gas valve** is closed immediately via relay/driver.
+2. The **cutoff indicator LED** turns ON immediately to show cutoff command active (this output can drive a real valve in full-power deployment).
 3. The **exhaust fan** is turned on and vent flap is opened using the **servo motor**.
 4. Buzzer, LEDs, and LCD provide clear alarm and hazard status.
-5. Gas restore is blocked until a continuous safe window is observed and manual reset conditions are met.
+5. Cutoff command remains blocked until a continuous safe window is observed and manual reset conditions are met.
 
 ### Functionality 3: Stop Alarm Button and Safe Recovery Workflow
 
@@ -131,7 +131,7 @@ The Stop Alarm button improves usability without allowing users to bypass safety
 
 **Working Procedure:**
 1. A short press of the **Stop Alarm button** mutes the buzzer for a temporary window.
-2. During mute, safety actions remain active: fan on, vent open, and gas cutoff locked.
+2. During mute, safety actions remain active: fan on, vent open, and cutoff command locked.
 3. LCD explicitly shows safety-active status (for example, `ALARM MUTED - SAFETY ACTIVE`).
 4. A long press is accepted only after safe readings persist for the configured recovery window.
 5. On valid recovery, the system returns to normal state and allows controlled reset of alarm status.
