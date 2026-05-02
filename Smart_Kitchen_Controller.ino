@@ -5,18 +5,18 @@
 // =========================
 // Hardware pin map
 // =========================
-const uint8_t PIN_MQ2 = A0;
-const uint8_t PIN_STOP_BUTTON = 2;
-const uint8_t PIN_FLAME = 3;
-const uint8_t PIN_BUZZER = 4;
-const uint8_t PIN_RELAY_FAN = 5;
-const uint8_t PIN_CUTOFF_LED = 6;  // Demo indicator for cutoff command (replaces valve)
-const uint8_t PIN_LED_YELLOW = 7;
-const uint8_t PIN_LED_RED = 8;
-const uint8_t PIN_LED_GREEN = 9;
-const uint8_t PIN_SERVO = 10;
-const uint8_t PIN_RESET_BUTTON = 11;  // Optional
-const uint8_t PIN_DHT = 12;
+const uint8_t PIN_MQ2 = A0;          // Matches your test code
+const uint8_t PIN_DHT = 2;           // Updated to match your test code
+const uint8_t PIN_FLAME = 3;         // Matches your test code
+const uint8_t PIN_STOP_BUTTON = 4;   // Moved from 2 to 4 to make room for DHT
+const uint8_t PIN_RELAY_FAN = 5;     // Matches your test code
+const uint8_t PIN_CUTOFF_LED = 6;    // Unchanged
+const uint8_t PIN_SERVO = 7;         // Updated to match your test code
+const uint8_t PIN_BUZZER = 8;        // Updated to match your test code
+const uint8_t PIN_LED_GREEN = 9;     // Unchanged
+const uint8_t PIN_LED_YELLOW = 10;   // Moved from 7 to 10 to make room for Servo
+const uint8_t PIN_RESET_BUTTON = 11; // Unchanged (Optional)
+const uint8_t PIN_LED_RED = 12;      // Moved from 8 to 12 to make room for Buzzer
 
 // =========================
 // Build-time configuration
