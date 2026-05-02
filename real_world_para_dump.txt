@@ -1,0 +1,53 @@
+PARAGRAPHS
+000: 
+001: 
+002: 
+003: CSE461
+004: Introduction to Robotics Lab
+005: 
+006: 
+007: Real-World Implication
+008: 
+009: 
+010: Group : X
+011: Section : X
+012: Semester : X_20XX
+013: 
+014: Group members :
+015: 
+016: 
+017: 
+018: 
+019: Submitted Date: DD-MM-YYYY
+020: Submitted to - XX
+021: Introduction: 
+022: 
+023: 
+024: Purpose: 
+025: 
+026: 
+027: Societal implications:
+028: 
+029: 
+030: Health implications:
+031: 
+032: 
+033: Safety implications:
+034: 
+035: 
+036: Legal implications:
+037: 
+038: 
+039: Cultural implications:
+040: 
+041: 
+042: Conclusion:
+043: 
+044: 
+045: 
+TABLE0
+ROW0:  || 
+ROW1:  || 
+ROW2:  || 
+ROW3:  || 
+ROW4:  || 

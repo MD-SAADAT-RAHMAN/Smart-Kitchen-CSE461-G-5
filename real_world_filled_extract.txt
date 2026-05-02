@@ -1,0 +1,45 @@
+﻿============================================================
+FULL DOCUMENT EXTRACTION
+============================================================
+CSE461
+Introduction to Robotics Lab
+Real-World Implication
+Group : 5
+Section : 3
+Semester : Spring_2026
+Group members :
+
+--- TABLE START ---
+  Row 0: Md.Abir Hasan Rohan || 22101294
+  Row 1: Md.Saadat Rahman || 22201101
+  Row 2: Tazwar Saif Chowdhury || 22201373
+  Row 3: Muntasir Mamun Sakib || 22299146
+  Row 4: Rufaida Faruque || 23101005
+--- TABLE END ---
+
+Submitted Date: 26-04-2026
+Submitted to - RDW, SMYA
+  [list lvl=0 numId=1] Introduction:
+The Smart Kitchen Safety and Ventilation System is an autonomous stationary safety platform designed for home and shared kitchens. It continuously observes gas leakage trend, temperature and humidity behavior, and flame presence, then uses a multi-condition state machine to decide whether the environment is normal, warning-level, or dangerous.
+  [list lvl=0 numId=1] Purpose:
+The purpose of this project is to reduce kitchen fire and gas-related accidents by combining early detection with automatic response. Instead of depending only on manual reaction, the system can activate alarm, ventilation, and gas-cutoff protection while also reducing false alarms during normal cooking.
+  [list lvl=0 numId=1] Societal implications:
+This project addresses a common real-world problem in Bangladesh where LPG-based cooking is widely used in homes, hostels, and rental apartments. A low-cost intelligent safety system can improve household security, protect children and elderly family members, and increase public awareness of preventive kitchen safety practices.
+  [list lvl=0 numId=1] Health implications:
+By detecting dangerous gas and heat conditions early, the system can lower exposure to harmful smoke and leaked gas, potentially reducing respiratory stress and burn injuries. Better kitchen ventilation control also supports healthier indoor air quality during long cooking sessions.
+  [list lvl=0 numId=1] Safety implications:
+Safety impact is the strongest implication of this project because it introduces automatic protective actions, not only notification. When risk persists, the system can trigger buzzer and visual alerts, run the fan, open vent flap, and lock gas cutoff. The Stop Alarm button is designed to mute sound without disabling protection, which prevents unsafe user override during emergencies.
+  [list lvl=0 numId=1] Legal implications:
+For practical deployment, electrical wiring, relay switching, and gas valve integration must follow local safety regulations and component ratings. Real installations should be tested and verified by qualified personnel, because failures in power design or valve logic could create liability issues. The project does not collect personal multimedia data, so privacy risk is low.
+  [list lvl=0 numId=1] Cultural implications:
+Cooking behavior in Bangladeshi families is diverse and frequent, so the system must respect normal kitchen activity without creating frequent nuisance alarms. Clear status messages and simple controls make the design more acceptable for users of different ages and technical backgrounds, supporting a culture of preventive safety at home.
+  [list lvl=0 numId=1] Conclusion:
+The Smart Kitchen Safety and Ventilation System has strong positive real-world implications in social, health, and safety dimensions. Its value comes from combining multi-sensor intelligence with automatic action, making it more practical than single-threshold alarm devices. With proper testing and compliant installation, it can become a reliable low-cost model for safer kitchens.
+
+============================================================
+DOCUMENT PROPERTIES
+============================================================
+Sections: 1
+Paragraphs: 46
+Tables: 1
+Styles used: ['normal']
