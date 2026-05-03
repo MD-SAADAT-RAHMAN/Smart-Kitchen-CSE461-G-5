@@ -55,9 +55,9 @@ def fill_report() -> None:
             "without disabling protection, which prevents unsafe user override during emergencies."
         ),
         37: (
-            "For practical deployment, electrical wiring, relay switching, and gas valve integration must follow "
-            "local safety regulations and component ratings. Real installations should be tested and verified by "
-            "qualified personnel, because failures in power design or valve logic could create liability issues. "
+            "For practical deployment, electrical wiring and relay switching must follow local safety regulations "
+            "and component ratings. Real installations should be tested and verified by qualified personnel, "
+            "because failures in power design or safety-control logic could create liability issues. "
             "The project does not collect personal multimedia data, so privacy risk is low."
         ),
         40: (
